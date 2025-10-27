@@ -14,6 +14,34 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    extensions: [".js", ".ts", ".jsx", ".tsx", ".json"],
+    extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json"],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-select',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-checkbox',
+            '@radix-ui/react-label',
+            '@radix-ui/react-slot',
+          ],
+          'form-vendor': [
+            'react-hook-form',
+            '@hookform/resolvers',
+            'zod',
+          ],
+          'supabase-vendor': ['@supabase/supabase-js'],
+        },
+      },
+    },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+    chunkSizeWarningLimit: 1000,
   },
 }));
