@@ -246,7 +246,7 @@ const RespondToVisitor = () => {
 
             <div className="space-y-2">
               <Label htmlFor="languages">구사 가능 언어</Label>
-              <Input
+              <Textarea
                 id="languages"
                 value={formData.languages}
                 onChange={(e) =>
