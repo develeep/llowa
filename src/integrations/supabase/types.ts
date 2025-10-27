@@ -16,32 +16,41 @@ export type Database = {
     Tables: {
       applications: {
         Row: {
+          age_range: string
           application_type: string
           contact_id: string | null
           created_at: string | null
+          gender: string
           id: string
           interested_location: string
           invitation_id: string | null
+          languages: string
           participants: number
           visitor_request_id: string | null
         }
         Insert: {
+          age_range?: string
           application_type?: string
           contact_id?: string | null
           created_at?: string | null
+          gender?: string
           id?: string
           interested_location: string
           invitation_id?: string | null
+          languages?: string
           participants: number
           visitor_request_id?: string | null
         }
         Update: {
+          age_range?: string
           application_type?: string
           contact_id?: string | null
           created_at?: string | null
+          gender?: string
           id?: string
           interested_location?: string
           invitation_id?: string | null
+          languages?: string
           participants?: number
           visitor_request_id?: string | null
         }

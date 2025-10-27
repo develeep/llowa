@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Calendar, MapPin, Users, Languages } from "lucide-react";
@@ -26,6 +27,9 @@ const RespondToVisitor = () => {
   const [formData, setFormData] = useState({
     interestedLocation: "",
     contact: "",
+    age_range: "20s",
+    gender: "any",
+    languages: "",
   });
 
   const fetchRequest = useCallback(async () => {
@@ -77,13 +81,16 @@ const RespondToVisitor = () => {
           interested_location: formData.interestedLocation,
           contact_id: contactId,
           participants: request.participants,
+          age_range: formData.age_range,
+          gender: formData.gender,
+          languages: formData.languages,
         });
 
       if (applicationError) throw applicationError;
 
       toast({
-        title: "응답이 전송되었습니다!",
-        description: "비지터에게 연락처가 전달되었습니다.",
+        title: "초대가 전송되었습니다!",
+        description: "초대장이 전송되었습니다. 외국인을 찾으면 연락처로 연락드립니다.",
       });
 
       navigate("/");
@@ -151,10 +158,16 @@ const RespondToVisitor = () => {
               <Users className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm text-muted-foreground mb-1">인원</p>
-                <p className="text-foreground">{request.participants}명</p>
+                <p className="text-foreground">{request.companion_genders}</p>
               </div>
             </div>
-
+            <div className="flex items-start gap-3 text-muted-foreground">
+              <Users className="h-5 w-5 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-sm text-muted-foreground mb-1">나이대</p>
+                <p className="text-foreground">{request.age_range}</p>
+              </div>
+            </div>
             <div className="flex items-start gap-3 text-muted-foreground">
               <Languages className="h-5 w-5 mt-0.5 flex-shrink-0" />
               <div>
@@ -163,38 +176,14 @@ const RespondToVisitor = () => {
               </div>
             </div>
           </div>
-
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">
-              {request.age_range} 세
-            </Badge>
-            <Badge variant="secondary" className="capitalize">
-              {request.gender === "male" ? "남성" : request.gender === "female" ? "여성" : "무관"}
-            </Badge>
-            {request.preferred_gender !== "any" && (
-              <Badge variant="outline" className="capitalize">
-                선호: {request.preferred_gender === "male" ? "남성" : request.preferred_gender === "female" ? "여성" : "무관"}
-              </Badge>
-            )}
-            {request.preferred_age_range !== "any" && (
-              <Badge variant="outline">
-                선호: {request.preferred_age_range} 세
-              </Badge>
-            )}
-            {request.companion_genders && (
-              <Badge variant="outline">
-                동행: {request.companion_genders}
-              </Badge>
-            )}
-          </div>
         </Card>
 
         <Card className="p-8 border-none bg-card/95 backdrop-blur">
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            로컬 가이드 응답
+            초대 신청하기
           </h2>
           <p className="text-muted-foreground mb-6">
-            이 비지터에게 제안하고 싶은 내용을 작성해주세요
+            이 방문자에게 제안하고 싶은 내용을 작성해주세요
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -210,6 +199,60 @@ const RespondToVisitor = () => {
                   })
                 }
                 placeholder="추천하는 장소나 활동을 설명해주세요"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="age_range">내 나이대</Label>
+                <Select
+                  value={formData.age_range}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, age_range: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="20s">20대</SelectItem>
+                    <SelectItem value="30s">30대</SelectItem>
+                    <SelectItem value="40s">40대</SelectItem>
+                    <SelectItem value="50+">50+</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gender">내 성별</Label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, gender: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">남성</SelectItem>
+                    <SelectItem value="female">여성</SelectItem>
+                    <SelectItem value="any">선택 안함</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="languages">구사 가능 언어</Label>
+              <Input
+                id="languages"
+                value={formData.languages}
+                onChange={(e) =>
+                  setFormData({ ...formData, languages: e.target.value })
+                }
+                placeholder="1~5의 언어 수준을 함께 입력해주세요 (예: 영어 3, 한국어 4, 일본어 5)"
                 required
               />
             </div>

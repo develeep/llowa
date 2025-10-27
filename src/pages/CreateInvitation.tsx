@@ -87,8 +87,8 @@ const CreateInvitation = () => {
             <h1 className="text-3xl font-bold text-foreground mb-2">
               초대장 작성
             </h1>
-            <p className="text-muted-foreground">
-              로컬 가이드로서 방문자들을 초대해보세요
+            <p className="text-muted-foreground text-sm">
+              원하는 시간, 장소, 활동 등을 적어 방문자를 초대 해 보세요. 초대에 맞는 방문자를 찾으면 작성해 주신 연락처로 연락드립니다.
             </p>
           </div>
 
@@ -107,7 +107,7 @@ const CreateInvitation = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="time">시간</Label>
+              <Label htmlFor="time">날자 및 시간</Label>
               <Input
                 id="time"
                 type="datetime-local"
@@ -141,7 +141,7 @@ const CreateInvitation = () => {
                   setFormData({ ...formData, activity: e.target.value })
                 }
                 required
-                placeholder="어떤 활동을 함께 할 예정인가요?"
+                placeholder="어떤 활동을 함께 할 예정인가요? (예: 서울 야경 투어, 한식 만들기, 영화 보기 등)"
                 rows={4}
               />
             </div>
@@ -181,7 +181,7 @@ const CreateInvitation = () => {
                   <SelectContent>
                     <SelectItem value="male">남성</SelectItem>
                     <SelectItem value="female">여성</SelectItem>
-                    <SelectItem value="any">무관</SelectItem>
+                    <SelectItem value="any">선택 안함</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -196,13 +196,26 @@ const CreateInvitation = () => {
                   setFormData({ ...formData, languages: e.target.value })
                 }
                 required
-                placeholder="예: 영어, 한국어, 일본어"
+                placeholder="1~5의 언어 수준을 함께 입력해주세요 (예: 영어 3, 한국어 4, 일본어 5)"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="contact">연락수단</Label>
+              <Input
+                id="contact"
+                value={formData.contact}
+                onChange={(e) =>
+                  setFormData({ ...formData, contact: e.target.value })
+                }
+                required
+                placeholder="예: 인스타그램, 이메일, 카카오톡 등"
               />
             </div>
 
             <div className="border-t pt-6 mt-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">선호하는 비지터</h3>
-              
+              <h3 className="text-lg font-semibold text-foreground">선호하는 방문자</h3>
+              <p className="text-muted-foreground text-sm mb-4">선호 요소는 방문자에겐 보이지 않습니다.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="preferred_gender">선호 성별</Label>
@@ -261,19 +274,6 @@ const CreateInvitation = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="contact">연락수단</Label>
-              <Input
-                id="contact"
-                value={formData.contact}
-                onChange={(e) =>
-                  setFormData({ ...formData, contact: e.target.value })
-                }
-                required
-                placeholder="예: 전화번호, 인스타그램, 이메일"
-              />
-            </div>
-
             <div className="border-t pt-6 mt-6">
               <div className="flex items-start space-x-3">
                 <Checkbox
@@ -317,14 +317,6 @@ const CreateInvitation = () => {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate("/visitor-requests")}
-                className="flex-1"
-              >
-                비지터 요청 보기
-              </Button>
               <Button
                 type="submit"
                 disabled={loading || !privacyAccepted}

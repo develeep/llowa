@@ -44,10 +44,13 @@ const VisitorRequestList = () => {
 
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
-            비지터 요청 목록
+            방문자 요청 목록
           </h1>
-          <p className="text-lg text-muted-foreground">
-            비지터들의 여행 요청을 확인하고 응답하세요
+          <p className="text-muted-foreground">
+            방문자들의 원하는 시간, 장소, 활동 등을 확인하고 초대 신청 해 보세요
+          </p>
+          <p className="text-muted-foreground text-xs">
+            현재 번역 기능은 제공되지 않으며 빠른 시일 내에 추가 예정입니다.
           </p>
         </div>
 
@@ -88,7 +91,11 @@ const VisitorRequestList = () => {
 
                   <div className="flex items-start gap-3 text-muted-foreground">
                     <Users className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                    <span>{request.participants}명</span>
+                    <span>{request.companion_genders}</span>
+                  </div>
+                  <div className="flex items-start gap-3 text-muted-foreground">
+                  <Users className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                    <span>{request.age_range} 나이대</span>
                   </div>
 
                   <div className="flex items-start gap-3 text-muted-foreground">
@@ -97,35 +104,11 @@ const VisitorRequestList = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge variant="secondary">
-                    {request.age_range} 세
-                  </Badge>
-                  <Badge variant="secondary" className="capitalize">
-                    {request.gender === "male" ? "남성" : request.gender === "female" ? "여성" : "무관"}
-                  </Badge>
-                  {request.preferred_gender !== "any" && (
-                    <Badge variant="outline" className="capitalize">
-                      선호: {request.preferred_gender === "male" ? "남성" : request.preferred_gender === "female" ? "여성" : "무관"}
-                    </Badge>
-                  )}
-                  {request.preferred_age_range !== "any" && (
-                    <Badge variant="outline">
-                      선호: {request.preferred_age_range} 세
-                    </Badge>
-                  )}
-                  {request.companion_genders && (
-                    <Badge variant="outline">
-                      동행: {request.companion_genders}
-                    </Badge>
-                  )}
-                </div>
-
                 <Button
                   className="w-full"
                   style={{ background: "var(--gradient-warm)" }}
                 >
-                  응답하기
+                  초대하기
                 </Button>
               </Card>
             ))}
