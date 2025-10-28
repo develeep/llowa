@@ -14,66 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
-      applications: {
+      local_applications: {
         Row: {
           age_range: string
-          application_type: string
           contact_id: string | null
           created_at: string | null
           gender: string
           id: string
           interested_location: string
-          invitation_id: string | null
           languages: string
           participants: number
-          visitor_request_id: string | null
+          visitor_request_id: string
         }
         Insert: {
           age_range?: string
-          application_type?: string
           contact_id?: string | null
           created_at?: string | null
           gender?: string
           id?: string
           interested_location: string
-          invitation_id?: string | null
           languages?: string
           participants: number
-          visitor_request_id?: string | null
+          visitor_request_id: string
         }
         Update: {
           age_range?: string
-          application_type?: string
           contact_id?: string | null
           created_at?: string | null
           gender?: string
           id?: string
           interested_location?: string
-          invitation_id?: string | null
           languages?: string
           participants?: number
-          visitor_request_id?: string | null
+          visitor_request_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "applications_contact_id_fkey"
+            foreignKeyName: "local_applications_contact_id_fkey"
             columns: ["contact_id"]
             isOneToOne: false
             referencedRelation: "contacts"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "applications_invitation_id_fkey"
-            columns: ["invitation_id"]
-            isOneToOne: false
-            referencedRelation: "invitations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "applications_visitor_request_id_fkey"
+            foreignKeyName: "local_applications_visitor_request_id_fkey"
             columns: ["visitor_request_id"]
             isOneToOne: false
             referencedRelation: "visitor_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      visitor_applications: {
+        Row: {
+          age_range: string
+          contact_id: string | null
+          created_at: string | null
+          id: string
+          interested_location: string
+          invitation_id: string
+          languages: string
+          participant_details: string
+        }
+        Insert: {
+          age_range?: string
+          contact_id?: string | null
+          created_at?: string | null
+          id?: string
+          interested_location: string
+          invitation_id: string
+          languages?: string
+          participant_details?: string
+        }
+        Update: {
+          age_range?: string
+          contact_id?: string | null
+          created_at?: string | null
+          id?: string
+          interested_location?: string
+          invitation_id?: string
+          languages?: string
+          participant_details?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visitor_applications_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visitor_applications_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
             referencedColumns: ["id"]
           },
         ]

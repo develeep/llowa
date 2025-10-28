@@ -74,10 +74,9 @@ const RespondToVisitor = () => {
 
       // 3. contact_id를 사용하여 application 저장
       const { error: applicationError } = await supabase
-        .from("applications")
+        .from("local_applications")
         .insert({
           visitor_request_id: requestId,
-          application_type: "visitor_request",
           interested_location: formData.interestedLocation,
           contact_id: contactId,
           participants: request.participants,
