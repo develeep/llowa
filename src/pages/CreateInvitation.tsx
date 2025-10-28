@@ -27,14 +27,62 @@ const CreateInvitation = () => {
     preferred_age_range: "any",
     max_participants: 4,
   });
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
+  const daysOfWeek = [
+    { value: "monday", labelKo: "월요일", labelEn: "Monday" },
+    { value: "tuesday", labelKo: "화요일", labelEn: "Tuesday" },
+    { value: "wednesday", labelKo: "수요일", labelEn: "Wednesday" },
+    { value: "thursday", labelKo: "목요일", labelEn: "Thursday" },
+    { value: "friday", labelKo: "금요일", labelEn: "Friday" },
+    { value: "saturday", labelKo: "토요일", labelEn: "Saturday" },
+    { value: "sunday", labelKo: "일요일", labelEn: "Sunday" },
+  ];
+
+  const timeSlots = [
+    { value: "morning", labelKo: "오전 (6-12시)", labelEn: "Morning (6AM-12PM)" },
+    { value: "afternoon", labelKo: "오후 (12-18시)", labelEn: "Afternoon (12PM-6PM)" },
+    { value: "evening", labelKo: "저녁 (18-24시)", labelEn: "Evening (6PM-12AM)" },
+    { value: "lateNight", labelKo: "심야 (0-6시)", labelEn: "Late Night (12AM-6AM)" },
+  ];
+
+  const handleDayToggle = (day: string) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    );
+  };
+
+  const handleTimeSlotToggle = (timeSlot: string) => {
+    setSelectedTimeSlots((prev) =>
+      prev.includes(timeSlot)
+        ? prev.filter((t) => t !== timeSlot)
+        : [...prev, timeSlot]
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (selectedDays.length === 0 || selectedTimeSlots.length === 0) {
+      toast.error("가능한 요일과 시간대를 최소 1개 이상 선택해주세요.");
+      return;
+    }
+    
     setLoading(true);
 
     try {
+      // 선택된 요일과 시간대를 영어로 변환하여 문자열로 저장
+      const daysString = selectedDays
+        .map((day) => daysOfWeek.find((d) => d.value === day)?.labelEn)
+        .join(", ");
+      const timeSlotsString = selectedTimeSlots
+        .map((slot) => timeSlots.find((t) => t.value === slot)?.labelEn)
+        .join(", ");
+      const timeString = `${daysString} / ${timeSlotsString}`;
+
       // 1. UUID를 미리 생성
       const contactId = crypto.randomUUID();
 
@@ -55,6 +103,7 @@ const CreateInvitation = () => {
         .from("invitations")
         .insert({ 
           ...invitationData,
+          time: timeString,
           contact_id: contactId 
         });
 
@@ -106,17 +155,48 @@ const CreateInvitation = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="time">날자 및 시간</Label>
-              <Input
-                id="time"
-                type="datetime-local"
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-                required
-              />
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <Label>가능한 요일 (복수 선택 가능)</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {daysOfWeek.map((day) => (
+                    <div key={day.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={day.value}
+                        checked={selectedDays.includes(day.value)}
+                        onCheckedChange={() => handleDayToggle(day.value)}
+                      />
+                      <label
+                        htmlFor={day.value}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {day.labelKo}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label>가능한 시간대 (복수 선택 가능)</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {timeSlots.map((slot) => (
+                    <div key={slot.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={slot.value}
+                        checked={selectedTimeSlots.includes(slot.value)}
+                        onCheckedChange={() => handleTimeSlotToggle(slot.value)}
+                      />
+                      <label
+                        htmlFor={slot.value}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      >
+                        {slot.labelKo}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="space-y-2">
